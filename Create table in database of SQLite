@@ -1,0 +1,17 @@
+import sqlite3
+  
+con=sqlite3.connect('Company_Manager.db')        #first create table in existing database of sqlite3
+print("Database is opened")
+
+con.execute('''Create table employee_info 
+                (ID int Primary Key NOT NULL,
+                first_name text NOT NULL,
+                last_name text NOT NULL,
+                age int NOT NULL,
+                address char(50),
+                experience_in_yrs int,
+                designation char(50),
+                salary REAL);''')
+
+print("Employee_info table is created inside company_manager database")
+con.close()
