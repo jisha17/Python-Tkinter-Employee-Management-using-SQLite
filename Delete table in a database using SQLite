@@ -1,0 +1,8 @@
+#To delete the table
+import sqlite3
+
+con=sqlite3.connect('Company_Manager.db')
+print("Database is open")
+con.execute("Drop table employee_info")
+print("Database is deleted")
+con.close()
