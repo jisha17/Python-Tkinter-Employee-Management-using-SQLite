@@ -8,8 +8,9 @@ f=Frame(root)
 frame1=Frame(root)
 frame2=Frame(root)
 frame3=Frame(root)
+frame4=Frame(root)
 root.title("Employee Management System")
-root.geometry("750x550")
+root.geometry("900x550")
 root.configure(background="Black")
 
 id_no=IntVar()                          #Declaration of all variables
@@ -20,6 +21,10 @@ address=StringVar()
 experience=DoubleVar()
 designation=StringVar()
 salary=DoubleVar()
+update_addr=StringVar()
+update_expr=DoubleVar()
+update_desg=StringVar()
+update_sal=DoubleVar()
 
 def add_data():                         #Enter the parameters/values to be added
     clear_all()
@@ -80,6 +85,15 @@ def addto_database():                         #Add all entered parameters to the
     exp=float(experience.get())
     desg=designation.get()
     sal=float(salary.get())
+    print("First Name: ",f1)
+    print("Last Name: ",l1)
+    print("ID: ",i)
+    print("Age: ",ag)
+    print("Address: ",addr)
+    print("Experience: ",exp)
+    print("Designation: ",desg)
+    print("Salary: ",sal,"\n")
+    
     try:
         if addr=="Select Option" or desg=="Select Option":
             messagebox.showerror("Error", "Please Select an option")
@@ -87,33 +101,42 @@ def addto_database():                         #Add all entered parameters to the
             messagebox.showerror("Error", "Please enter all data")
         elif f and l:
             con=sqlite3.connect('Company_Manager.db')
+            print("Database is opened")
             cursor=con.execute("Select ID,first_name,last_name,age,address,experience_in_yrs,designation,salary from employee_info \
                     where (first_name=? and last_name=?) or (ID=?)",(f1,l1,i))
             data_exist=cursor.fetchall()
+            print(data_exist)
             if data_exist:
                 messagebox.showerror("Error", "Employee already exist")
                 con.rollback()
             else:
                 con=sqlite3.connect('Company_Manager.db')        
+                print("Database is opened")
                 con.execute("""Insert into employee_info(ID,first_name,last_name,age,address,experience_in_yrs,designation,\
                 salary) values (?,?,?,?,?,?,?,?);""",(i,f1,l1,ag,addr,exp,desg,sal))
                 con.commit()
-            messagebox.showinfo("Done","Successfully added the employee")
+                print("Database closed")
+                messagebox.showinfo("Done","Successfully added the employee")
         elif i:
             con=sqlite3.connect('Company_Manager.db')
+            print("Database is opened")
             cursor=con.execute("Select ID,first_name,last_name,age,address,experience_in_yrs,designation,salary from employee_info \
                     where (first_name=? and last_name=?) or (ID=?)",(f1,l1,i))
             data_exist=cursor.fetchall()
+            print(data_exist)
             if data_exist:
                 messagebox.showerror("Error", "ID already exist")
                 con.rollback()
         else:
             con=sqlite3.connect('Company_Manager.db')        
+            print("Database is opened")
             con.execute("""Insert into employee_info(ID,first_name,last_name,age,address,experience_in_yrs,designation,salary)\
                 values (?,?,?,?,?,?,?,?);""",(i,f1,l1,ag,addr,exp,desg,sal))
             con.commit()
+            print("Database closed")
             messagebox.showinfo("Done","Successfully added the employee")
-    except BaseException:
+    except BaseException as e:
+        print(e)
         messagebox.showerror("Error", "ID already exist")
         con.rollback()
     finally:
@@ -149,11 +172,20 @@ def removefrom_database():          #for removing data from database
         l=lastname.get()
         l1=l.lower()
         i=int(id_no.get())
+        print("remove firstname: ",f1)
+        print(type(f1))
+        print("remove lastname: ",l1)
+        print(type(l1))
+        print("remove ID: ",i)
+        print(type(i))
+        
         if f and l:
             con=sqlite3.connect('Company_Manager.db')
+            print("Database is opened")
             cursor=con.execute("Select ID,first_name,last_name,age,address,experience_in_yrs,designation,salary from employee_info \
                     where (first_name=? and last_name=?) or (ID=?)",(f1,l1,i))
             data_exist=cursor.fetchall()
+            print(data_exist)
             if data_exist:
                 con.execute("Delete from employee_info where first_name=? and last_name=?",(f1,l1))
                 con.commit()
@@ -162,9 +194,11 @@ def removefrom_database():          #for removing data from database
                 messagebox.showerror("Error", "Data does not exist")
         elif i:
             con=sqlite3.connect('Company_Manager.db')
+            print("Database is opened")
             cursor=con.execute("Select ID,first_name,last_name,age,address,experience_in_yrs,designation,salary from employee_info \
                     where (first_name=? and last_name=?) or (ID=?)",(f1,l1,i))
             data_exist=cursor.fetchall()
+            print(data_exist)
             if data_exist:
                 con.execute("Delete from employee_info where ID=?",(i,))
                 con.commit()
@@ -178,6 +212,10 @@ def removefrom_database():          #for removing data from database
         con.rollback()      
     finally:
         con.close()
+        print("Database closed")
+
+        
+    
 
 def search_emp():     #can implement search by 1st name,last name or id
     clear_all()
@@ -197,7 +235,8 @@ def search_emp():     #can implement search by 1st name,last name or id
     e14=Entry(frame3,textvariable=id_no)
     e14.grid(row=4,column=2,padx=10,pady=10)
     search_button=Button(frame3,text="Click to search",command=searchin_database)
-    search_button.grid(row=5,column=2,padx=10,pady=10)    
+    search_button.grid(row=5,column=2,padx=10,pady=10)
+    
     frame3.configure(background="Red")
     frame3.pack(ipady=10,ipadx=10)
     
@@ -209,13 +248,31 @@ def searchin_database():
         l=lastname.get()
         l1=l.lower()
         i=int(id_no.get())
+        print("Search firstname: ",f1)
+        print(type(f1))
+        print("Search lastname: ",l1)
+        print(type(l1))
+        print("Search ID: ",i)
+        print(type(i))
+        
         if f1 and l1:
             con=sqlite3.connect('Company_Manager.db')
+            print("Database is opened")
             cursor=con.execute("Select ID,first_name,last_name,age,address,experience_in_yrs,designation,salary from employee_info \
                     where (first_name=? and last_name=?) or (ID=?)",(f1,l1,i))
             data_exist=cursor.fetchall()
+            print(data_exist)
             if data_exist:
                 for row in data_exist:
+                    print("ID: ",row[0])
+                    print("First Name: ",row[1])
+                    print("Last Name: ",row[2])
+                    print("Age: ",row[3])
+                    print("Address: ",row[4])
+                    print("Experince: ",row[5])
+                    print("Designation:",row[6])
+                    print("Salary: ",row[7],"\n")   
+                    
                     text_insert0='{0}:{1}'.format("ID  ",row[0])
                     text_insert1='{0}:{1}'.format("First Name  ",row[1])
                     text_insert2='{0}:{1}'.format("Last Name  ",row[2])
@@ -255,11 +312,22 @@ def searchin_database():
                 messagebox.showerror("Error", "Data does not exist")
         elif i:
             con=sqlite3.connect('Company_Manager.db')
+            print("Database is opened")
             cursor=con.execute("Select ID,first_name,last_name,age,address,experience_in_yrs,designation,salary from employee_info \
                     where (first_name=? and last_name=?) or (ID=?)",(f1,l1,i))
             data_exist=cursor.fetchall()
+            print(data_exist)
             if data_exist:
-                for row in data_exist:   
+                for row in data_exist:
+                    print("ID: ",row[0])
+                    print("First Name: ",row[1])
+                    print("Last Name: ",row[2])
+                    print("Age: ",row[3])
+                    print("Address: ",row[4])
+                    print("Experince: ",row[5])
+                    print("Designation:",row[6])
+                    print("Salary: ",row[7],"\n")    
+                    
                     text_insert0='{0}:{1}'.format("ID  ",row[0])
                     text_insert1='{0}:{1}'.format("First Name  ",row[1])
                     text_insert2='{0}:{1}'.format("Last Name  ",row[2])
@@ -304,11 +372,275 @@ def searchin_database():
         con.rollback()      
     finally:
         con.close()
+        print("Database closed")
+
+def update_emp():                            #To update address,experience, designation and salary of the existing employee
+    clear_all()
+    label14=Label(frame4, text="Enter the following details of employee:",bg="red",fg="Blue")
+    label14.configure(width=30,anchor=W)
+    label14.grid(row=1,column=2)
+    emp_first_name=Label(frame4,text="Enter first name of the employee: ",bg="red",fg="Blue")   #to take user input to seach
+    emp_first_name.grid(row=2,column=1)
+    e12=Entry(frame4,textvariable=firstname)
+    e12.grid(row=2,column=2)
+    e12.focus()
+    emp_last_name=Label(frame4,text="Enter last name of the employee: ",bg="red",fg="Blue")
+    emp_last_name.grid(row=3,column=1)
+    e13=Entry(frame4,textvariable=lastname)
+    e13.grid(row=3,column=2)
+    emp_id=Label(frame4,text="Enter ID of the employee: ",bg="red",fg="Blue")
+    emp_id.grid(row=4,column=1)
+    e14=Entry(frame4,textvariable=id_no)
+    e14.grid(row=4,column=2)
+    button8=Button(frame4,text="Search",bg="Yellow",fg="Blue",anchor=W,command=searchin_database1)
+    button8.grid(row=6,column=2)
+    update_addr=Button(frame4,text="Update Address ",bg="Yellow",fg="Blue",anchor=W,command=update_addr_emp)
+    update_addr.grid(row=7,column=1,padx=10,pady=10)
+    update_exp=Button(frame4,text="Update Experience ",bg="Yellow",fg="Blue",anchor=W,command=update_exp_emp)
+    update_exp.grid(row=7,column=2,padx=10,pady=10)
+    update_desg=Button(frame4,text="Update Designation ",bg="Yellow",fg="Blue",anchor=W,command=update_desg_emp)
+    update_desg.grid(row=7,column=3,padx=10,pady=10)
+    update_sal=Button(frame4,text="Update Salary ",bg="Yellow",fg="Blue",anchor=W,command=update_sal_emp)
+    update_sal.grid(row=7,column=4,padx=10,pady=10)
+    
+    frame4.configure(background="Red")
+    frame4.pack()
+    
+def update_addr_emp():                                           #To fetch the new address to be updated
+    label14=Label(frame4, text="Enter new address of the employee:",bg="red",fg="Blue")
+    label14.configure(width=30,anchor=CENTER)
+    label14.grid(row=8,column=1)
+    update_addr.set("Mumbai")
+    emp_addr_update=OptionMenu(frame4,update_addr,"Mumbai","Thane","Navi Mumbai")
+    emp_addr_update.grid(row=8,column=2,padx=10,pady=10)
+    update_addr_button=Button(frame4,text="Update", bg="Yellow",fg="Blue",command=update_addr_emp_indatabase)
+    update_addr_button.grid(row=8,column=3,ipadx=20,pady=10)
+    label14=Label(frame4, text="*(Search again for same employee\nto verify the changes)",bg="red",fg="Blue")
+    label14.grid(row=8,column=4)
+        
+def update_addr_emp_indatabase():                            #To update the fetched data in database 
+    try:
+        f=firstname.get()
+        f1=f.lower()
+        l=lastname.get()
+        l1=l.lower()
+        i=int(id_no.get())
+        new_addr=update_addr.get()
+        new_addr1=new_addr.lower()
+        if f1 and l1 and i:
+            con=sqlite3.connect('Company_Manager.db')
+            cursor=con.execute("Select address from employee_info where first_name=? and last_name=? and ID=?",(f1,l1,i))
+            data_exist1=cursor.fetchall()
+            if data_exist1[0][0]==new_addr:
+                messagebox.showerror("Error", "New data is same as existing data")
+            else:
+                con.execute("Update employee_info set address=? where first_name=? and last_name=? and ID=?",(new_addr,f1,l1,i))
+                con.commit()
+                messagebox.showinfo("Done","Successfully updated the information.")
+        else:
+            messagebox.showerror("Error","First search the data to be updated and then update the information")
+    except BaseException as e:
+        print(e)
+        messagebox.showerror("Error", "Something went wrong")
+        con.rollback()      
+    finally:
+        con.close() 
+        
+def update_exp_emp():                                           #To fetch the new experience of employee to be updated
+    label14=Label(frame4, text="Enter new experience of the employee:",bg="red",fg="Blue")
+    label14.configure(width=30,anchor=CENTER)
+    label14.grid(row=8,column=1)
+    emp_expr_update=Entry(frame4,textvariable=update_expr, width=15)
+    emp_expr_update.grid(row=8,column=2,padx=10,pady=10)
+    update_addr_button=Button(frame4,text="Update", bg="Yellow",fg="Blue",command=update_exp_emp_indatabase)
+    update_addr_button.grid(row=8,column=3,ipadx=20,pady=10)
+    label14=Label(frame4, text="*(Search again for same employee\nto verify the changes)",bg="red",fg="Blue")
+    label14.grid(row=8,column=4)
+        
+def update_exp_emp_indatabase():                            #To update the fetched data in database 
+    try:
+        print("Entered try")
+        f=firstname.get()
+        f1=f.lower()
+        l=lastname.get()
+        l1=l.lower()
+        i=int(id_no.get())
+        new_expr=float(update_expr.get())
+        if new_expr==0.0:
+            messagebox.showerror("Error", "Please enter valid data")
+        elif f1 and l1 and i!=0.0:
+            con=sqlite3.connect('Company_Manager.db')
+            cursor=con.execute("Select experience_in_yrs from employee_info where first_name=?\
+            and last_name=? and ID=?",(f1,l1,i))
+            data_exist1=cursor.fetchall()
+            print(data_exist1[0][0])
+            print(new_expr)
+            if data_exist1[0][0]==new_expr:
+                messagebox.showerror("Error", "New data is same as existing data")
+            else:
+                con.execute("Update employee_info set experience_in_yrs=? where first_name=? and last_name=?\
+                and ID=?",(new_expr,f1,l1,i))
+                con.commit()
+                messagebox.showinfo("Done","Successfully updated the information.(experience)")
+        else:
+            messagebox.showerror("Error","First search the data to be updated and then update the information")
+    except BaseException as e:
+        print(e)
+        messagebox.showerror("Error", "Something went wrong")
+        con.rollback()      
+    finally:
+        con.close()
+
+def update_desg_emp():                                           #To fetch the new address to be updated
+    label14=Label(frame4, text="Enter new designation of the employee:",bg="red",fg="Blue")
+    label14.configure(width=30,anchor=CENTER)
+    label14.grid(row=8,column=1)
+    update_desg.set("Select Option")
+    emp_desg_update=OptionMenu(frame4,update_desg,"Select Option","Manager","Asst Manager","Project Manager",
+                               "Team Lead","Senior Tester", "Junior Tester","Senior Developer","Junior Developer","Intern")
+    emp_desg_update.grid(row=8,column=2,padx=10,pady=10)   
+    update_desg_button=Button(frame4,text="Update", bg="Yellow",fg="Blue",command=update_desg_emp_indatabase)
+    update_desg_button.grid(row=8,column=3,ipadx=20,pady=10)
+    label14=Label(frame4, text="*(Search again for same employee\nto verify the changes)",bg="red",fg="Blue")
+    label14.grid(row=8,column=4)
+        
+def update_desg_emp_indatabase():                            #To update the fetched data in database 
+    try:
+        f=firstname.get()
+        f1=f.lower()
+        l=lastname.get()
+        l1=l.lower()
+        i=int(id_no.get())
+        new_desg=update_desg.get()
+        new_desg1=new_desg.lower()
+        if new_desg=="Select Option":
+            messagebox.showerror("Error", "Pleas enter an option")    
+        elif f1 and l1 and i:
+            con=sqlite3.connect('Company_Manager.db')
+            cursor=con.execute("Select designation from employee_info where first_name=? and last_name=? and ID=?",(f1,l1,i))
+            data_exist1=cursor.fetchall()
+            if data_exist1[0][0]==new_desg:
+                messagebox.showerror("Error", "New data is same as existing data")
+            else:
+                con.execute("Update employee_info set designation=? where first_name=? and last_name=? and \
+                ID=?",(new_desg,f1,l1,i))
+                con.commit()
+                messagebox.showinfo("Done","Successfully updated the information.")
+        else:
+            messagebox.showerror("Error","First search the data to be updated and then update the information")
+    except BaseException as e:
+        print(e)
+        messagebox.showerror("Error", "Something went wrong")
+        con.rollback()      
+    finally:
+        con.close() 
+        
+    
+def update_sal_emp():                                           #To fetch the new experience of employee to be updated
+    label14=Label(frame4, text="Enter new salary of the employee:",bg="red",fg="Blue")
+    label14.configure(width=30,anchor=CENTER)
+    label14.grid(row=8,column=1)
+    emp_expr_update=Entry(frame4,textvariable=update_sal, width=15)
+    emp_expr_update.grid(row=8,column=2,padx=10,pady=10)
+    update_addr_button=Button(frame4,text="Update", bg="Yellow",fg="Blue",command=update_sal_emp_indatabase)
+    update_addr_button.grid(row=8,column=3,ipadx=20,pady=10)
+    label14=Label(frame4, text="*(Search again for same employee\nto verify the changes)",bg="red",fg="Blue")
+    label14.grid(row=8,column=4)
+        
+def update_sal_emp_indatabase():                            #To update the fetched data in database 
+    try:
+        f=firstname.get()
+        f1=f.lower()
+        l=lastname.get()
+        l1=l.lower()
+        i=int(id_no.get())
+        new_sal=float(update_sal.get())
+        if new_sal==0.0:
+            messagebox.showerror("Error", "Please enter valid data")
+        elif f1 and l1 and new_sal!=0.0:
+            con=sqlite3.connect('Company_Manager.db')
+            cursor=con.execute("Select salary from employee_info where first_name=? and last_name=? and ID=?",(f1,l1,i))
+            data_exist1=cursor.fetchall()
+            print(data_exist1[0][0])
+            print(new_sal)
+            if data_exist1[0][0]==new_sal:
+                messagebox.showerror("Error", "New data is same as existing data")
+            else:
+                con.execute("Update employee_info set salary=? where first_name=? and last_name=? and ID=?",(new_sal,f1,l1,i))
+                con.commit()
+                messagebox.showinfo("Done","Successfully updated the information")
+        else:
+            messagebox.showerror("Error","First search the data to be updated and then update the information")
+    except BaseException as e:
+        print(e)
+        messagebox.showerror("Error", "Something went wrong")
+        con.rollback()      
+    finally:
+        con.close()
+        
+def searchin_database1():
+    try:
+        f=firstname.get()
+        f1=f.lower()
+        l=lastname.get()
+        l1=l.lower()
+        i=int(id_no.get())
+        if f1 and l1 and i:
+            con=sqlite3.connect('Company_Manager.db')
+            cursor=con.execute("Select ID,first_name,last_name,age,address,experience_in_yrs,designation,salary \
+            from employee_info where (first_name=? and last_name=?) or (ID=?)",(f1,l1,i))
+            data_exist=cursor.fetchall()
+            if data_exist:
+                for row in data_exist:
+                    text_insert0='{0}:{1}'.format("ID  ",row[0])
+                    text_insert1='{0}:{1}'.format("First Name  ",row[1])
+                    text_insert2='{0}:{1}'.format("Last Name  ",row[2])
+                    text_insert3='{0}:{1}'.format("Age  ",row[3])
+                    text_insert4='{0}:{1}'.format("Address  ",row[4])
+                    text_insert5='{0}:{1}'.format("Experience  ",row[5])
+                    text_insert6='{0}:{1}'.format("Designation  ",row[6])
+                    text_insert7='{0}:{1}'.format("Salary  ",row[7])
+                    Label6=Label(frame4,text="Below is the details:",bg="red",fg="Blue")
+                    Label6.configure(width=25,anchor=W)
+                    Label6.grid(row=1,column=3,padx=10)
+                    Label6=Label(frame4,text=text_insert0,background="White", fg="Black")
+                    Label6.configure(width=25,anchor=W)
+                    Label6.grid(row=2,column=4)
+                    Label7=Label(frame4,text=text_insert1,background="White", fg="Black")
+                    Label7.configure(width=25,anchor=W)
+                    Label7.grid(row=2,column=3)
+                    Label8=Label(frame4,text=text_insert2,background="White", fg="Black")
+                    Label8.configure(width=25,anchor=W)
+                    Label8.grid(row=3,column=3)
+                    Label9=Label(frame4,text=text_insert3,background="White", fg="Black")
+                    Label9.configure(width=25,anchor=W)
+                    Label9.grid(row=4,column=3)
+                    Label10=Label(frame4,text=text_insert4,background="White", fg="Black")
+                    Label10.configure(width=25,anchor=W)
+                    Label10.grid(row=5,column=3)
+                    Label11=Label(frame4,text=text_insert5,background="White", fg="Black")
+                    Label11.configure(width=25,anchor=W)
+                    Label11.grid(row=3,column=4)
+                    Label12=Label(frame4,text=text_insert6,background="White", fg="Black")
+                    Label12.configure(width=25,anchor=W)
+                    Label12.grid(row=4,column=4)
+                    Label13=Label(frame4,text=text_insert7,background="White", fg="Black",bg="white")
+                    Label13.configure(width=25,anchor=W)
+                    Label13.grid(row=5,column=4,padx=10)
+            else:
+                messagebox.showerror("Error", "Data does not exist")
+        else:
+                messagebox.showerror("Error", "Please enter all required data")
+    except BaseException as e:
+        print(e)
+        messagebox.showerror("Error", "Invalid Data")
+        con.rollback()      
+
 def clear_all():             #for clearing the entry widgets
     frame1.pack_forget()
     frame2.pack_forget()
     frame3.pack_forget()
-    
+    frame4.pack_forget()
     
 #Main window buttons and labels
 
@@ -323,10 +655,13 @@ button2=Button(f,text="Remove", background="Brown", fg="white", width=8, command
 button2.pack(side=LEFT,ipadx=20,pady=10)
 button3=Button(f,text="Search", background="Brown", fg="White", width=8, command=search_emp)
 button3.pack(side=LEFT,ipadx=20,pady=10)
+button5=Button(f,text="Update", background="Brown", fg="White", width=8, command=update_emp)
+button5.pack(side=LEFT,ipadx=20,pady=10)
 button6=Button(f,text="Close", background="Brown", fg="White", width=8, command=root.destroy)
 button6.pack(side=LEFT,ipadx=20,pady=10)
 f.configure(background="Black")
 f.pack()
+
 
 
 root.mainloop()
