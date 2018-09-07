@@ -8,5 +8,7 @@ Download sqlite3 from https://www.sqlite.org/download.html ->download zip file f
 5. Last if you wish to delete the entire table created in database refer "Delete table in database of SQLite" file.
 
 It is a GUI application. In this application you can Add, Remove, Searcha and Upadte the information of employee
-Database: SQLite
-Code: Python using tkinter
+
+Programming language used:- Python, 
+Database: SQLite,
+Version of Python:3.6.
