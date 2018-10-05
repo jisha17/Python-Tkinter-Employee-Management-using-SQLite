@@ -1,6 +1,6 @@
 # Python-Tkinter-Employee-Management-using-SQLite
 
-It is a GUI application. In this application you can Add, Remove, Search and Upadte the information of employee using SQLite database
+It is a GUI application. In this application you can Add, Remove, Search and Update the information of employee using SQLite database
 
 1. First create database to create below project.
 Download sqlite3 from https://www.sqlite.org/download.html ->download zip file from "Precompiled Binaries for Windows" section i.e sqlite-tools-win32-x86-3240000.zip . ->Create a folder in C: drive and name it as sqlite. ->extract the downloaded zip folder inside C:\sqlite. You will get a subfolder and 3 executable file in it.
